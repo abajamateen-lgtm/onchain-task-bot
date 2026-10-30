@@ -1,0 +1,31 @@
+name: Web3 Cloud Task Runner
+
+on:
+  schedule:
+    # Runs automatically every day at 08:00 AM UTC
+    - cron: '0 8 * * *'
+  # Allows manual runs anytime from the GitHub website
+  workflow_dispatch:
+
+jobs:
+  run-web3-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install web3 eth-account
+
+    - name: Run Script
+      env:
+        WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
+      run: python main.py
